@@ -31,7 +31,7 @@ FirebaseExamples::FirebaseExamples(int action
 void FirebaseExamples::patch()
 {
     QJsonObject jsonObj;
-    jsonObj["user"] = "hi";
+    jsonObj["user"] = "hii";
     jsonObj["password"] = "password";
     jsonObj["email"] = "email@hi.co.uk";
     QJsonDocument uploadDoc(jsonObj);
@@ -39,10 +39,10 @@ void FirebaseExamples::patch()
     Firebase *firebaseSet = new Firebase(fbUrl, path);
     firebaseSet->setValue(uploadDoc, "PATCH");
 
-    connect(firebaseSet,SIGNAL(replyFinished(QNetworkReply))
-            ,this,SLOT(onReplyFinished(QNetworkReply)));
-
+    connect(firebaseSet,SIGNAL(eventResponseReady(QByteArray))
+            ,this,SLOT(onResponseReady(QByteArray)));
 }
+
 
 void FirebaseExamples::get()
 {
@@ -52,7 +52,6 @@ void FirebaseExamples::get()
 
     connect(firebaseGet,SIGNAL(eventResponseReady(QByteArray))
             ,this,SLOT(onResponseReady(QByteArray)));
-
 }
 
 void FirebaseExamples::useToken()

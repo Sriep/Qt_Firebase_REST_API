@@ -14,6 +14,15 @@
 /*!
  * \brief The Firebase class provides access to the Firebase Database REST API
  *
+ * Enter the URL of your database endpoint in the constructor. The Firebase
+ * object will now interact with that endpoint. You can send read, write and
+ * listen requests. Results are accessed by handling the eventResponseReady
+ * and eventDataChanged signals.
+ *
+ * For further infomation check out
+ * <a href="http://piersshepperson.co.uk/programming/2017/06/26/firebase-database-rest-api-qt/">
+ * this blog post</a>.
+ *
  */
 class Firebase : public QObject
 {
@@ -115,6 +124,8 @@ public:
      */
     QString getPath(const QString &queryString="");
 
+
+
 signals:
     /*!
      * \brief eventResponseReady Sent after a
@@ -129,9 +140,13 @@ signals:
     void eventResponseReady(QByteArray replyData);
 
     /*!
-     * \brief eventDataChanged
+     * \brief eventDataChanged Sent after a
+     * <a href="http://doc.qt.io/qt-5/qiodevice.html#readyRead">
+     * QNetworkReply::readyRead</a> is received. It checks
+     * for a "put" event with non empty data before forwarding the signal.
      *
-     * \param changedData
+     * \param changedData holds the update detected to the REST endpoint.
+     * The first signal received is the initial contents of the endpoint.
      */
     void eventDataChanged(QString changedData);
 
