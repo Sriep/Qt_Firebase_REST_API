@@ -10,6 +10,15 @@ To use copy the firebase.h and firebase.cpp files into your own projects. Either
 
 `git clone https://github.com/Sriep/Qt_Firebase_REST_API.git`
 
+##Overview
+
+The API supports three types of commands. Read, write and listen. The steps to perform a request are as follows.
+
+1. Create a Firebase object. The constructor takes your Firebase URL and REST endpoint inside your database as parameters.
+2. Call the appropriate Firebase function. setValue, getValue or listenEvents. All three take the query string as an optional parameter.
+3. Create a slot to connect to either of the Firebase signals, eventDataChange and eventResponseReady. Read up here for a refresher on signals and slots.
+4. If necessary handle the response in your slot(s).
+
 
 
 
