@@ -6,7 +6,7 @@ Details of the Firebase REST API can be found at [here](https://firebase.google.
 
 This porject is related to [chlasd's Firebase API](https://github.com/clkasd/qt-firebaseapi) but updated, slimmed and modernised.
 
-To use copy the firebase.h and firebase.cpp files into your own projects. Either copy the files form GitHub indivdually, or downlaod the whole project with 
+To use, copy the firebase.h and firebase.cpp files into your own projects. Either copy the files form GitHub indivdually, or downlaod the whole project with 
 
 `git clone https://github.com/Sriep/Qt_Firebase_REST_API.git`
 
