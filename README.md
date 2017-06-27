@@ -1,4 +1,4 @@
-# Qt_Firebase_REST_API
+# Qt Firebase REST API
 
 This provides a wrapper around the Firebase REST API for use with Qt Projects. An alternative explanation of this project can be found at [the blog post](http://piersshepperson.co.uk/programming/2017/06/26/firebase-database-rest-api-qt/).  
 
