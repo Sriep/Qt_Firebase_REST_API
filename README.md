@@ -75,8 +75,9 @@ Once we have made a request we will normally wish to see the response. Even if i
 ```
 connect(fb,SIGNAL(eventResponseReady(QByteArray)) 
              ,this,SLOT(onResponseReady(QByteArray)));
+```
 And create the onResponseReady function to handle it. You can see examples in firebaseexamples.cpp.
-
+```
 MyFirebaseUsingClass::onResponseReady(QByteArray replyData)
 {
   // Handel response
