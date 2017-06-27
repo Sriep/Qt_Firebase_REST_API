@@ -10,7 +10,7 @@ To use, copy the firebase.h and firebase.cpp files into your own projects. Eithe
 
 `git clone https://github.com/Sriep/Qt_Firebase_REST_API.git`
 
-##Overview
+## Overview
 
 The API supports three types of commands. Read, write and listen. The steps to perform a request are as follows.
 
