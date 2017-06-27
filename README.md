@@ -21,7 +21,7 @@ The API supports three types of commands. Read, write and listen. The steps to p
 
 ## Anatomy of API request.
 
-Each request can be split up into four main blocks of text plus separators.
+Each request can be split up into five main blocks of text plus separators.
 
 - Data. Used for save requests. This has to be in JSON format.
 - Firebase URL. The URL of your database, typically “App-Name.firebaseio.com”.
