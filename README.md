@@ -83,7 +83,7 @@ MyFirebaseUsingClass::onResponseReady(QByteArray replyData)
   // Handel response
 }
 ```
-Now whenever the Firebase object emits a responseReasy signal, the onResponseReady function will be called with the `QByteArray` parameter will hold any information returned. You can put any code to handle the data and finish the request in here. The `Firebase::onResponseReasy` signal actually chains the `QtNetworkReply::finished` signal which is emitted when the reply has finished processing. The `QByteArrya` parameter is the return value from the inherited function `QtNetworkReply::readAll` which reads all the remaining data.
+Now whenever the Firebase object emits a responseReasy signal, the onResponseReady function will be called with the `QByteArray` parameter will hold any information returned. You can put any code to handle the data and finish the request in here. The `Firebase::onResponseReasy` signal actually chains the `QtNetworkReply::finished` signal which is emitted when the reply has finished processing. The `QByteArry` parameter is the return value from the inherited function `QtNetworkReply::readAll` which reads all the remaining data.
 
 ### Stream changes to database
 
