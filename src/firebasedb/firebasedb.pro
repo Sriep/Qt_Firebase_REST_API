@@ -1,7 +1,7 @@
 TARGET = QtFirebaseDb
 MODULE = firebasedb
 
-QT += core network
+QT += core core-private network
 
 #DEFINES += QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
 

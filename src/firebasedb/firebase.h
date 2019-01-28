@@ -2,17 +2,10 @@
 #define FIREBASE_H
 
 #include <QObject>
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkRequest>
-#include <QUrl>
-#include <QUrlQuery>
-#include <QDebug>
-#include <QtGlobal>
-#include <QJsonDocument>
 
 #include "firebaseinterface.h"
 
+class FirebasePrivate;
 class Q_FIREBASEDB_EXPORT Firebase : public FirebaseInterface
 {
     Q_OBJECT
@@ -29,14 +22,7 @@ public:
     QString getPath(const QString &queryString = QStringLiteral("")) override;
 
 private:
-    QString host;
-    QString firebaseToken = QStringLiteral("");
-    QNetworkAccessManager *manager;
-    QString buildPath(const QString &queryString = QStringLiteral(""));
-    void open(const QUrl &url);
-    QString forceEndChar(const QString& string, char endCh);
-    QString forceStartChar(const QString& string, char startCh);
-    QByteArray trimValue(const QByteArray &line) const;
+    Q_DECLARE_PRIVATE(Firebase)
 };
 
 #endif // FIREBASE_H

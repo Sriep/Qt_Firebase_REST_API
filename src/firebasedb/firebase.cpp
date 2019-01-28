@@ -1,12 +1,31 @@
 #include "firebase.h"
-#include <string.h>
-#include <QIODevice>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QDateTime>
-#include <QCryptographicHash>
-#include <QtDebug>
-#include <QBuffer>
+
+#include <QtCore/QIODevice>
+#include <QtCore/QBuffer>
+#include <QtCore/QUrl>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+
+#include <QtCore/private/qobject_p.h>
+
+class FirebasePrivate : public QObjectPrivate
+{
+public:
+    QString host;
+    QString firebaseToken = QStringLiteral("");
+    QNetworkAccessManager *manager;
+    QString buildPath(const QString &queryString = QStringLiteral(""));
+    void open(const QUrl &url);
+
+    static QString forceEndChar(const QString& string, char endCh);
+    static QString forceStartChar(const QString& string, char startCh);
+    static QByteArray trimValue(const QByteArray &line);
+
+    Q_DECLARE_PUBLIC(Firebase)
+};
 
 /*!
  * \class Firebase
@@ -49,11 +68,12 @@ Firebase::Firebase(const QString &hostName
                    , QObject *parent)
    : FirebaseInterface(parent)
 {
-    host = forceEndChar(hostName.trimmed(), '/');
-    host = host.append(dbPath.trimmed());
+    Q_D(Firebase);
+    d->host = FirebasePrivate::forceEndChar(hostName.trimmed(), '/');
+    d->host = d->host.append(dbPath.trimmed());
 
-    manager=new QNetworkAccessManager(this);
-    connect(manager, &QNetworkAccessManager::finished, [this](QNetworkReply *reply) {
+    d->manager = new QNetworkAccessManager(this);
+    connect(d->manager, &QNetworkAccessManager::finished, [this](QNetworkReply *reply) {
         emit eventResponseReady(reply->readAll());
     });
 }
@@ -73,34 +93,37 @@ Firebase::Firebase(const QString &hostName
  */
 void Firebase::listenEvents(const QString& queryString)
 {
-    open(buildPath(queryString));
+    Q_D(Firebase);
+    d->open(d->buildPath(queryString));
 }
 
-void Firebase::open(const QUrl &url)
+void FirebasePrivate::open(const QUrl &url)
 {
+    Q_Q(Firebase);
+
     QNetworkRequest request(url);
     request.setRawHeader("Accept", "text/event-stream");
     QNetworkReply *_reply = manager->get(request);
-    connect(_reply, &QNetworkReply::readyRead, [this]() {
-        QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+    QObject::connect(_reply, &QNetworkReply::readyRead, [q]() {
+        QNetworkReply *reply = qobject_cast<QNetworkReply*>(q->sender());
         if(reply)
         {
             QByteArray line=reply->readLine();
             if(!line.isEmpty())
             {
-                QByteArray eventName=trimValue(line);
+                QByteArray eventName = FirebasePrivate::trimValue(line);
                 line = reply->readAll();
                 if(eventName == "put")
                 {
                     QString dataSnapshot = QString::fromLatin1(line);
-                    emit eventDataChanged(dataSnapshot);
+                    emit q->eventDataChanged(dataSnapshot);
                 }
             }
         }
         reply->readAll();
     });
-    connect(_reply, &QNetworkReply::finished, [this]() {
-        QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+    QObject::connect(_reply, &QNetworkReply::finished, [this, q]() {
+        QNetworkReply *reply = qobject_cast<QNetworkReply*>(q->sender());
         if (reply)
         {
             QUrl redirectUrl = reply->attribute(
@@ -143,7 +166,9 @@ void Firebase::setValue(QJsonDocument jsonDoc
                         , const QString &verb
                         , const QString& queryString)
 {
-    QString path = buildPath(queryString);
+    Q_D(Firebase);
+
+    QString path = d->buildPath(queryString);
     QNetworkRequest request(path);
     request.setHeader(QNetworkRequest::ContentTypeHeader,
                       QStringLiteral("application/x-www-form-urlencoded"));
@@ -155,7 +180,7 @@ void Firebase::setValue(QJsonDocument jsonDoc
     buffer->seek(0);
 
     QByteArray verbBA = verb.toUtf8();
-    manager->sendCustomRequest(request, verbBA ,buffer);
+    d->manager->sendCustomRequest(request, verbBA ,buffer);
     buffer->close();
 }
 
@@ -178,8 +203,10 @@ void Firebase::setValue(QJsonDocument jsonDoc
  */
 void Firebase::getValue(const QString& queryString)
 {
-    QNetworkRequest request(buildPath(queryString));
-    manager->get(request);
+    Q_D(Firebase);
+
+    QNetworkRequest request(d->buildPath(queryString));
+    d->manager->get(request);
 }
 
 /*!
@@ -194,12 +221,13 @@ void Firebase::getValue(const QString& queryString)
  */
 QString Firebase::getPath(const QString &queryString)
 {
-    return buildPath(queryString);
+    Q_D(Firebase);
+    return d->buildPath(queryString);
 }
 
-QString Firebase::buildPath(const QString &queryString)
+QString FirebasePrivate::buildPath(const QString &queryString)
 {
-    QString destination=host;
+    QString destination = host;
 
     const int dotJsonLength = 5;
     if (destination.length() <= dotJsonLength
@@ -212,7 +240,7 @@ QString Firebase::buildPath(const QString &queryString)
     return destination;
 }
 
-QByteArray Firebase::trimValue(const QByteArray &line) const
+QByteArray FirebasePrivate::trimValue(const QByteArray &line)
 {
     QByteArray value;
     int index = line.indexOf(':');
@@ -221,14 +249,14 @@ QByteArray Firebase::trimValue(const QByteArray &line) const
     return value.trimmed();
 }
 
-QString Firebase::forceEndChar(const QString &string, char endCh)
+QString FirebasePrivate::forceEndChar(const QString &string, char endCh)
 {
     if (string[string.length()-1] != endCh)
         return QString(string).append(endCh);
     return string;
 }
 
-QString Firebase::forceStartChar(const QString &string, char startCh)
+QString FirebasePrivate::forceStartChar(const QString &string, char startCh)
 {
     if (string.length() > 0 && string[0] != startCh)
         return QString(string).prepend(startCh);
