@@ -29,9 +29,6 @@ public:
     QString getPath(const QString &queryString = QStringLiteral("")) override;
 
 private:
-    void init();
-
-    QByteArray signMessage(QByteArray toSign, QByteArray privateKey);
     QString host;
     QString firebaseToken = QStringLiteral("");
     QNetworkAccessManager *manager;

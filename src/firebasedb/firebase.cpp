@@ -51,11 +51,7 @@ Firebase::Firebase(const QString &hostName
 {
     host = forceEndChar(hostName.trimmed(), '/');
     host = host.append(dbPath.trimmed());
-    init();
-}
 
-void Firebase::init()
-{
     manager=new QNetworkAccessManager(this);
     connect(manager, &QNetworkAccessManager::finished, [this](QNetworkReply *reply) {
         emit eventResponseReady(reply->readAll());
