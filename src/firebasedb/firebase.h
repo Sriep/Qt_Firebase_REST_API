@@ -17,19 +17,15 @@ class Q_FIREBASEDB_EXPORT Firebase : public QObject
 {
     Q_OBJECT
 public:
-    explicit Firebase(const QString& hostName = ""
-                      , const QString& dbPath = ""
-                      , QObject *parent = 0);
+    explicit Firebase(const QString& hostName = QStringLiteral(""), const QString& dbPath = QStringLiteral(""),
+                      QObject *parent = nullptr);
 
-    void setValue(QJsonDocument jsonDoc
-                  , const QString& verb = "PATCH"
-                  , const QString &queryString = "");
+    void setValue(QJsonDocument jsonDoc, const QString& verb = QStringLiteral("PATCH"),
+                  const QString &queryString = QStringLiteral(""));
+    void getValue(const QString& queryString = QStringLiteral(""));
+    void listenEvents(const QString& queryString = QStringLiteral(""));
 
-    void getValue(const QString& queryString = "");
-
-    void listenEvents(const QString& queryString = "");
-
-    QString getPath(const QString &queryString="");
+    QString getPath(const QString &queryString = QStringLiteral(""));
 
 
 
@@ -41,15 +37,15 @@ private slots:
     void replyFinished(QNetworkReply*);
     void eventFinished();
     void eventReadyRead();
-private:
-    void init();    
 
+private:
+    void init();
 
     QByteArray signMessage(QByteArray toSign, QByteArray privateKey);
     QString host;
-    QString firebaseToken="";
+    QString firebaseToken = QStringLiteral("");
     QNetworkAccessManager *manager;
-    QString buildPath(const QString &queryString = "");
+    QString buildPath(const QString &queryString = QStringLiteral(""));
     void open(const QUrl &url);
     QString forceEndChar(const QString& string, char endCh);
     QString forceStartChar(const QString& string, char startCh);

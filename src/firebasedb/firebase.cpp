@@ -114,10 +114,10 @@ void Firebase::eventReadyRead()
         if(!line.isEmpty())
         {
             QByteArray eventName=trimValue(line);
-            line=reply->readAll();
-            if(eventName=="put")
+            line = reply->readAll();
+            if(eventName == "put")
             {
-                QString dataSnapshot(line);
+                QString dataSnapshot = QString::fromLatin1(line);
                 emit eventDataChanged(dataSnapshot);
             }
         }
@@ -155,7 +155,7 @@ void Firebase::setValue(QJsonDocument jsonDoc
     QString path = buildPath(queryString);
     QNetworkRequest request(path);
     request.setHeader(QNetworkRequest::ContentTypeHeader,
-                      "application/x-www-form-urlencoded");
+                      QStringLiteral("application/x-www-form-urlencoded"));
     QByteArray jsonBA = jsonDoc.toJson(QJsonDocument::Compact);
 
     QBuffer *buffer=new QBuffer();
@@ -217,8 +217,8 @@ QString Firebase::buildPath(const QString &queryString)
 
     const int dotJsonLength = 5;
     if (destination.length() <= dotJsonLength
-            || destination.right(dotJsonLength) != ".json")
-        destination.append(".json");
+            || destination.right(dotJsonLength) != QStringLiteral(".json"))
+        destination.append(QStringLiteral(".json"));
 
     if (queryString.length() > 0)
             destination.append(forceStartChar(queryString,'?'));
