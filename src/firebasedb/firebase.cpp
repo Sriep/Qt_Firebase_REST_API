@@ -47,7 +47,7 @@
 Firebase::Firebase(const QString &hostName
                    , const QString &dbPath
                    , QObject *parent)
-   : QObject(parent)
+   : FirebaseInterface(parent)
 {
     host = forceEndChar(hostName.trimmed(), '/');
     host = host.append(dbPath.trimmed());

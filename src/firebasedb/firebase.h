@@ -11,27 +11,22 @@
 #include <QtGlobal>
 #include <QJsonDocument>
 
-#include "firebase_global.h"
+#include "firebaseinterface.h"
 
-class Q_FIREBASEDB_EXPORT Firebase : public QObject
+class Q_FIREBASEDB_EXPORT Firebase : public FirebaseInterface
 {
     Q_OBJECT
+
 public:
     explicit Firebase(const QString& hostName = QStringLiteral(""), const QString& dbPath = QStringLiteral(""),
                       QObject *parent = nullptr);
 
     void setValue(QJsonDocument jsonDoc, const QString& verb = QStringLiteral("PATCH"),
-                  const QString &queryString = QStringLiteral(""));
-    void getValue(const QString& queryString = QStringLiteral(""));
-    void listenEvents(const QString& queryString = QStringLiteral(""));
+                  const QString &queryString = QStringLiteral("")) override;
+    void getValue(const QString& queryString = QStringLiteral("")) override;
+    void listenEvents(const QString& queryString = QStringLiteral("")) override;
 
-    QString getPath(const QString &queryString = QStringLiteral(""));
-
-
-
-signals:
-    void eventResponseReady(QByteArray replyData);
-    void eventDataChanged(QString changedData);
+    QString getPath(const QString &queryString = QStringLiteral("")) override;
 
 private slots:
     void replyFinished(QNetworkReply*);
