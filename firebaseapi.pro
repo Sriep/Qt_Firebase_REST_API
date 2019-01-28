@@ -1,22 +1,4 @@
-#-------------------------------------------------
-# Project created by QtCreator 2015-12-02T10:56:50
-#-------------------------------------------------
+requires(qtHaveModule(network))
 
-QT       += core
-QT       +=network
-QT       -= gui
+load(qt_parts)
 
-TARGET = firebaseapi
-CONFIG   += console
-CONFIG   -= app_bundle
-
-TEMPLATE = app
-
-SOURCES += main.cpp \
-    firebase.cpp \
-    main.cpp \
-    firebaseexamples.cpp
-
-HEADERS += \
-    firebase.h \
-    firebaseexamples.h

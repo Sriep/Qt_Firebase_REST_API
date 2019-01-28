@@ -1,3 +1,7 @@
+include
+lib
+mkspecs
+
 # C++ objects and libs
 
 *.slo

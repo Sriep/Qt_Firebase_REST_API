@@ -1,9 +1,11 @@
 #include "firebaseexamples.h"
+
 #include <QUrl>
-#include <firebase.h>
 #include <QtDebug>
 #include <QJsonObject>
 #include <QJsonDocument>
+
+#include <QtFirebaseDb/firebase.h>
 
 FirebaseExamples::FirebaseExamples(int action
                              , const QString &firebaseURL

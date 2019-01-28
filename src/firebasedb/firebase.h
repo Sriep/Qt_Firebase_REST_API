@@ -11,6 +11,8 @@
 #include <QtGlobal>
 #include <QJsonDocument>
 
+#include "firebase_global.h"
+
 /*!
  * \brief The Firebase class provides access to the Firebase Database REST API
  *
@@ -24,7 +26,7 @@
  * this blog post</a>.
  *
  */
-class Firebase : public QObject
+class Q_FIREBASEDB_EXPORT Firebase : public QObject
 {
     Q_OBJECT
 public:
