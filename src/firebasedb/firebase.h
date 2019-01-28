@@ -28,11 +28,6 @@ public:
 
     QString getPath(const QString &queryString = QStringLiteral("")) override;
 
-private slots:
-    void replyFinished(QNetworkReply*);
-    void eventFinished();
-    void eventReadyRead();
-
 private:
     void init();
 

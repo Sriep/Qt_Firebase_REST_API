@@ -57,8 +57,9 @@ Firebase::Firebase(const QString &hostName
 void Firebase::init()
 {
     manager=new QNetworkAccessManager(this);
-    connect(manager,SIGNAL(finished(QNetworkReply*))
-            ,this,SLOT(replyFinished(QNetworkReply*)));
+    connect(manager, &QNetworkAccessManager::finished, [this](QNetworkReply *reply) {
+        emit eventResponseReady(reply->readAll());
+    });
 }
 
 /*!
@@ -84,45 +85,39 @@ void Firebase::open(const QUrl &url)
     QNetworkRequest request(url);
     request.setRawHeader("Accept", "text/event-stream");
     QNetworkReply *_reply = manager->get(request);
-    connect(_reply, &QNetworkReply::readyRead, this, &Firebase::eventReadyRead);
-    connect(_reply, &QNetworkReply::finished, this, &Firebase::eventFinished);
-}
-
-void Firebase::eventFinished()
-{
-    QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
-    if (reply)
-    {
-        QUrl redirectUrl = reply->attribute(
-                    QNetworkRequest::RedirectionTargetAttribute).toUrl();
-        if (!redirectUrl.isEmpty())
+    connect(_reply, &QNetworkReply::readyRead, [this]() {
+        QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+        if(reply)
         {
-            reply->deleteLater();
-            open(redirectUrl);
-            return;
-        }
-        reply->deleteLater();
-    }
-}
-
-void Firebase::eventReadyRead()
-{
-    QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
-    if(reply)
-    {
-        QByteArray line=reply->readLine();
-        if(!line.isEmpty())
-        {
-            QByteArray eventName=trimValue(line);
-            line = reply->readAll();
-            if(eventName == "put")
+            QByteArray line=reply->readLine();
+            if(!line.isEmpty())
             {
-                QString dataSnapshot = QString::fromLatin1(line);
-                emit eventDataChanged(dataSnapshot);
+                QByteArray eventName=trimValue(line);
+                line = reply->readAll();
+                if(eventName == "put")
+                {
+                    QString dataSnapshot = QString::fromLatin1(line);
+                    emit eventDataChanged(dataSnapshot);
+                }
             }
         }
-    }
-    reply->readAll();
+        reply->readAll();
+    });
+    connect(_reply, &QNetworkReply::finished, [this]() {
+        QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+        if (reply)
+        {
+            QUrl redirectUrl = reply->attribute(
+                        QNetworkRequest::RedirectionTargetAttribute).toUrl();
+            if (!redirectUrl.isEmpty())
+            {
+                reply->deleteLater();
+                open(redirectUrl);
+                return;
+            }
+            reply->deleteLater();
+        }
+    });
 }
 
 
@@ -189,11 +184,6 @@ void Firebase::getValue(const QString& queryString)
 {
     QNetworkRequest request(buildPath(queryString));
     manager->get(request);
-}
-
-void Firebase::replyFinished(QNetworkReply *reply)
-{
-    emit eventResponseReady(reply->readAll());
 }
 
 /*!
