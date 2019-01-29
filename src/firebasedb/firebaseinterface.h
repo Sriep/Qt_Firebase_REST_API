@@ -4,6 +4,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QByteArray>
+#include <QtCore/QJsonDocument>
 
 #include "firebase_global.h"
 
