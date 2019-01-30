@@ -14,7 +14,7 @@ public:
     explicit Firebase(const QString& hostName = QStringLiteral(""), const QString& dbPath = QStringLiteral(""),
                       QObject *parent = nullptr);
 
-    void setValue(QJsonDocument jsonDoc, const QString& verb = QStringLiteral("PATCH"),
+    void setValue(QJsonDocument jsonDoc, HttpVerb verb = FirebaseInterface::PATCH,
                   const QString &queryString = QStringLiteral("")) override;
     void getValue(const QString& queryString = QStringLiteral("")) override;
     void listenEvents(const QString& queryString = QStringLiteral("")) override;

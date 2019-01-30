@@ -1,5 +1,6 @@
 #include "firebase.h"
 
+#include <QtCore/QMetaEnum>
 #include <QtCore/QIODevice>
 #include <QtCore/QBuffer>
 #include <QtCore/QUrl>
@@ -162,9 +163,7 @@ void FirebasePrivate::open(const QUrl &url)
  * Query choices include: access_token, shallow, print, callback, format
  * and download.
  */
-void Firebase::setValue(QJsonDocument jsonDoc
-                        , const QString &verb
-                        , const QString& queryString)
+void Firebase::setValue(QJsonDocument jsonDoc, FirebaseInterface::HttpVerb verb, const QString& queryString)
 {
     Q_D(Firebase);
 
@@ -179,7 +178,8 @@ void Firebase::setValue(QJsonDocument jsonDoc
     buffer->write(jsonBA);
     buffer->seek(0);
 
-    QByteArray verbBA = verb.toUtf8();
+    QMetaEnum metaEnum = QMetaEnum::fromType<FirebaseInterface::HttpVerb>();
+    QByteArray verbBA = metaEnum.valueToKey(verb);
     d->manager->sendCustomRequest(request, verbBA ,buffer);
     buffer->close();
 }

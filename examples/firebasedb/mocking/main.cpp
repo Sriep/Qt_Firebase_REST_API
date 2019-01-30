@@ -76,7 +76,7 @@ private:
 class FirebaseMock : public FirebaseInterface
 {
 public:
-    MAKE_MOCK3(setValue,        void(QJsonDocument, const QString&, const QString&), override);
+    MAKE_MOCK3(setValue,        void(QJsonDocument, FirebaseInterface::HttpVerb, const QString&), override);
     MAKE_MOCK1(getValue,        void(const QString&), override);
     MAKE_MOCK1(listenEvents,    void(const QString&), override);
     MAKE_MOCK1(getPath,         QString(const QString &), override);

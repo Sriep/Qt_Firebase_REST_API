@@ -39,7 +39,7 @@ void FirebaseExamples::patch()
     QJsonDocument uploadDoc(jsonObj);
     QString path="lll/users/fred/";
     Firebase *firebaseSet = new Firebase(fbUrl, path);
-    firebaseSet->setValue(uploadDoc, "PATCH");
+    firebaseSet->setValue(uploadDoc, Firebase::PATCH);
 
     connect(firebaseSet,SIGNAL(eventResponseReady(QByteArray))
             ,this,SLOT(onResponseReady(QByteArray)));
@@ -67,7 +67,7 @@ void FirebaseExamples::useToken()
     ba = uploadDoc.toJson(QJsonDocument::Compact);
     Firebase *firebaseSet = new Firebase(fbUrl, ".settings/rules");
     qDebug()<<"URL:" << firebaseSet->getPath(authToken);
-    firebaseSet->setValue(uploadDoc, "PUT", authToken);
+    firebaseSet->setValue(uploadDoc, Firebase::PUT, authToken);
 
     connect(firebaseSet,SIGNAL(eventResponseReady(QNetworkReply))
             ,this,SLOT(onResponseReady(QNetworkReply)));
