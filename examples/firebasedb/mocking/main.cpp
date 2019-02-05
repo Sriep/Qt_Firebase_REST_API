@@ -59,8 +59,7 @@ public:
         QJsonArray arr = QJsonArray::fromStringList(m_articles);
         QJsonObject obj;
         obj["articles"] = arr;
-        QJsonDocument doc(obj);
-        m_connection.setValue(doc);
+        m_connection.setValue(obj);
     }
     void download()
     {
@@ -77,7 +76,7 @@ private:
 class FirebaseMock : public FirebaseInterface
 {
 public:
-    MAKE_MOCK3(setValue,        void(QJsonDocument, FirebaseInterface::HttpVerb, const QString&), override);
+    MAKE_MOCK3(setValue,        void(QJsonObject, FirebaseInterface::HttpVerb, const QString&), override);
     MAKE_MOCK1(getValue,        void(const QString&), override);
     MAKE_MOCK1(listenEvents,    void(const QString&), override);
     MAKE_MOCK1(getPath,         QString(const QString &), override);
@@ -128,7 +127,7 @@ TEST_CASE("set user data", "[upload]") {
         list.addArticle("Tomatoes");
         list.addArticle("Cheese");
 
-        REQUIRE_CALL_V(mock, setValue(QJsonDocument::fromJson(uploadSample1.toUtf8()), _, _));
+        REQUIRE_CALL_V(mock, setValue(QJsonDocument::fromJson(uploadSample1.toUtf8()).object(), _, _));
         list.upload();
     }
 }

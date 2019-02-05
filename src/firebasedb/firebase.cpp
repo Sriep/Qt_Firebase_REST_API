@@ -155,15 +155,11 @@ void FirebasePrivate::open(const QUrl &url)
  *
  * \see Firebase::EventResponseReady signal.
  *
- * \param jsonDoc Data in the format of a QJsonDocuemnt.
- *
- * \param verb Action to perform. Choices include:: PUT, POST, PATCH and DELETE.
- *
  * \param queryString Query string, a preceding query is added if necessary.
  * Query choices include: access_token, shallow, print, callback, format
  * and download.
  */
-void Firebase::setValue(QJsonDocument jsonDoc, FirebaseInterface::HttpVerb verb, const QString& queryString)
+void Firebase::setValue(QJsonObject jsonobj, FirebaseInterface::HttpVerb verb, const QString& queryString)
 {
     Q_D(Firebase);
 
@@ -171,7 +167,7 @@ void Firebase::setValue(QJsonDocument jsonDoc, FirebaseInterface::HttpVerb verb,
     QNetworkRequest request(path);
     request.setHeader(QNetworkRequest::ContentTypeHeader,
                       QStringLiteral("application/x-www-form-urlencoded"));
-    QByteArray jsonBA = jsonDoc.toJson(QJsonDocument::Compact);
+    QByteArray jsonBA = QJsonDocument(jsonobj).toJson(QJsonDocument::Compact);
 
     QBuffer *buffer=new QBuffer();
     buffer->open((QBuffer::ReadWrite));

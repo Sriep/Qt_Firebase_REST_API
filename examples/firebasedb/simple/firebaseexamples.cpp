@@ -36,10 +36,9 @@ void FirebaseExamples::patch()
     jsonObj["user"] = "hii";
     jsonObj["password"] = "password";
     jsonObj["email"] = "email@hi.co.uk";
-    QJsonDocument uploadDoc(jsonObj);
-    QString path = "lll/users/fred/";
-    Firebase *firebaseSet = new Firebase(fbUrl, path);
-    firebaseSet->setValue(uploadDoc, Firebase::PATCH);
+
+    Firebase *firebaseSet = new Firebase(fbUrl, "lll/users/fred/");
+    firebaseSet->setValue(jsonObj, Firebase::PATCH);
 
     connect(firebaseSet, &Firebase::eventResponseReady,
             this, &FirebaseExamples::onResponseReady);
@@ -62,12 +61,10 @@ void FirebaseExamples::useToken()
     jsonRule[".read"] = true;
     QJsonObject jsonRules;
     jsonRules["rules"] = jsonRule;
-    QByteArray ba;
-    QJsonDocument uploadDoc(jsonRules);
-    ba = uploadDoc.toJson(QJsonDocument::Compact);
+
     Firebase *firebaseSet = new Firebase(fbUrl, ".settings/rules");
     qDebug() << "URL:" << firebaseSet->getPath(authToken);
-    firebaseSet->setValue(uploadDoc, Firebase::PUT, authToken);
+    firebaseSet->setValue(jsonRules, Firebase::PUT, authToken);
 
     connect(firebaseSet, &Firebase::eventResponseReady,
             this, &FirebaseExamples::onResponseReady);

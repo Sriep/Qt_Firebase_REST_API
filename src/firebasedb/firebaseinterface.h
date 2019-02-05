@@ -4,7 +4,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QByteArray>
-#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
 #include <QtNetwork/QNetworkReply>
 
 #include "firebase_global.h"
@@ -12,7 +12,6 @@
 /**
  * TODO:
  * ** add "subpath" parameter
- * ** modifies QJsonDocument to QJsonObject
  */
 
 class Q_FIREBASEDB_EXPORT FirebaseInterface : public QObject
@@ -30,7 +29,7 @@ public:
 
     FirebaseInterface(QObject *parent = nullptr) : QObject(parent) {}
 
-    virtual void setValue(QJsonDocument jsonDoc, HttpVerb verb = PATCH,
+    virtual void setValue(QJsonObject jsonObj, HttpVerb verb = PATCH,
                   const QString &queryString = QStringLiteral("")) = 0;
     virtual void getValue(const QString& queryString = QStringLiteral("")) = 0;
     virtual void listenEvents(const QString& queryString = QStringLiteral("")) = 0;
