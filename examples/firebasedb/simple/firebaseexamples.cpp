@@ -37,23 +37,23 @@ void FirebaseExamples::patch()
     jsonObj["password"] = "password";
     jsonObj["email"] = "email@hi.co.uk";
     QJsonDocument uploadDoc(jsonObj);
-    QString path="lll/users/fred/";
+    QString path = "lll/users/fred/";
     Firebase *firebaseSet = new Firebase(fbUrl, path);
     firebaseSet->setValue(uploadDoc, Firebase::PATCH);
 
-    connect(firebaseSet,SIGNAL(eventResponseReady(QByteArray))
-            ,this,SLOT(onResponseReady(QByteArray)));
+    connect(firebaseSet, &Firebase::eventResponseReady,
+            this, &FirebaseExamples::onResponseReady);
 }
 
 
 void FirebaseExamples::get()
 {
-    Firebase *firebaseGet=new Firebase(fbUrl, "lll/users/.json");
-    qDebug()<<"URL:" << firebaseGet->getPath();
+    Firebase *firebaseGet = new Firebase(fbUrl, "lll/users/.json");
+    qDebug() << "URL:" << firebaseGet->getPath();
     firebaseGet->getValue();
 
-    connect(firebaseGet,SIGNAL(eventResponseReady(QByteArray))
-            ,this,SLOT(onResponseReady(QByteArray)));
+    connect(firebaseGet, &Firebase::eventResponseReady,
+            this, &FirebaseExamples::onResponseReady);
 }
 
 void FirebaseExamples::useToken()
@@ -66,34 +66,37 @@ void FirebaseExamples::useToken()
     QJsonDocument uploadDoc(jsonRules);
     ba = uploadDoc.toJson(QJsonDocument::Compact);
     Firebase *firebaseSet = new Firebase(fbUrl, ".settings/rules");
-    qDebug()<<"URL:" << firebaseSet->getPath(authToken);
+    qDebug() << "URL:" << firebaseSet->getPath(authToken);
     firebaseSet->setValue(uploadDoc, Firebase::PUT, authToken);
 
-    connect(firebaseSet,SIGNAL(eventResponseReady(QNetworkReply))
-            ,this,SLOT(onResponseReady(QNetworkReply)));
-
+    connect(firebaseSet, &Firebase::eventResponseReady,
+            this, &FirebaseExamples::onResponseReady);
 }
 
 void FirebaseExamples::listen()
 {
-    Firebase *firebaseGet=new Firebase(fbUrl, "lll/.json");
+    Firebase *firebaseGet = new Firebase(fbUrl, "lll/.json");
     firebaseGet->listenEvents();
-    connect(firebaseGet,SIGNAL(eventResponseReady(QByteArray))
-            ,this,SLOT(onResponseReady(QByteArray)));
-    connect(firebaseGet,SIGNAL(eventDataChanged(QString))
-            ,this,SLOT(onDataChanged(QString)));
+    connect(firebaseGet, &Firebase::eventResponseReady,
+            this, &FirebaseExamples::onResponseReady);
+    connect(firebaseGet, &Firebase::eventDataChanged,
+            this, &FirebaseExamples::onDataChanged);
 }
 
-void FirebaseExamples::onResponseReady(QByteArray data)
+void FirebaseExamples::onResponseReady(QNetworkReply::NetworkError error, QByteArray data)
 {
-    qDebug()<<"onResponseReady";
-    qDebug()<<data;
+    if (error != QNetworkReply::NoError) {
+        qDebug() << "the firebase request failed!";
+        return;
+    }
+    qDebug() << "onResponseReady";
+    qDebug() << data;
 }
 
 void FirebaseExamples::onDataChanged(QString data)
 {
-    qDebug()<<"onDataChanged";
-    qDebug()<<data;
+    qDebug() << "onDataChanged";
+    qDebug() << data;
 }
 
 

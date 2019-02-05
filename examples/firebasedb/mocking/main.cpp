@@ -38,7 +38,8 @@ public:
         : m_connection(firebaseConnection)
     {
         download();
-        QObject::connect(&firebaseConnection, &FirebaseInterface::eventResponseReady, [this](QByteArray data) {
+        QObject::connect(&firebaseConnection, &FirebaseInterface::eventResponseReady,
+                         [this](QNetworkReply::NetworkError, QByteArray data) {
             QJsonDocument doc = QJsonDocument::fromJson(data);
             QJsonObject obj = doc.object();
             for (auto &item : obj["articles"].toArray().toVariantList()) {
@@ -97,13 +98,13 @@ TEST_CASE("get user data", "[download]") {
     ShoppingList list(mock);
 
     SECTION("simple download") {
-        emit mock.eventResponseReady(QByteArray::fromStdString(downloadInitialSample));
+        emit mock.eventResponseReady(QNetworkReply::NoError, QByteArray::fromStdString(downloadInitialSample));
         REQUIRE(list.articleCount() == 2);
     }
 
     SECTION("download finished after append") {
         list.addArticle("Ananas");
-        emit mock.eventResponseReady(QByteArray::fromStdString(downloadInitialSample));
+        emit mock.eventResponseReady(QNetworkReply::NoError, QByteArray::fromStdString(downloadInitialSample));
         REQUIRE(list.articleCount() == 3);
 
         SECTION("don't simply append after initial sync") {
@@ -120,7 +121,7 @@ TEST_CASE("set user data", "[upload]") {
     REQUIRE_CALL_V(mock, getValue(""));
     ShoppingList list(mock);
 
-    emit mock.eventResponseReady(QByteArray::fromStdString(downloadInitialSample));
+    emit mock.eventResponseReady(QNetworkReply::NoError, QByteArray::fromStdString(downloadInitialSample));
     REQUIRE(list.articleCount() == 2);
 
     SECTION("add two articles and sync") {

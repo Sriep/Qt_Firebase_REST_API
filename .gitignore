@@ -1,6 +1,8 @@
 include
 lib
 mkspecs
+examples/firebasedb/mocking/mocking.app
+examples/firebasedb/simple/firebaseapi
 
 # C++ objects and libs
 

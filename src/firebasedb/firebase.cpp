@@ -75,7 +75,7 @@ Firebase::Firebase(const QString &hostName
 
     d->manager = new QNetworkAccessManager(this);
     connect(d->manager, &QNetworkAccessManager::finished, [this](QNetworkReply *reply) {
-        emit eventResponseReady(reply->readAll());
+        emit eventResponseReady(reply->error(), reply->readAll());
     });
 }
 

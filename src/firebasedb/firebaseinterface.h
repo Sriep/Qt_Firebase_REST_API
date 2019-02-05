@@ -5,13 +5,14 @@
 #include <QtCore/QString>
 #include <QtCore/QByteArray>
 #include <QtCore/QJsonDocument>
+#include <QtNetwork/QNetworkReply>
 
 #include "firebase_global.h"
 
 /**
  * TODO:
  * ** add "subpath" parameter
- * ** add overload for setValue with QByteArray() instead of QJsonDocument()
+ * ** modifies QJsonDocument to QJsonObject
  */
 
 class Q_FIREBASEDB_EXPORT FirebaseInterface : public QObject
@@ -37,7 +38,7 @@ public:
     virtual QString getPath(const QString &queryString = QStringLiteral("")) = 0;
 
 signals:
-    void eventResponseReady(QByteArray replyData);
+    void eventResponseReady(QNetworkReply::NetworkError error, QByteArray replyData);
     void eventDataChanged(QString changedData);
 };
 

@@ -57,7 +57,7 @@ public slots:
      *
      * \see Firebase::eventResponseReady(QByteArray replyData)
      */
-    void onResponseReady(QByteArray);
+    void onResponseReady(QNetworkReply::NetworkError, QByteArray);
 
     /*!
      * \brief onDataChanged Connect to Firebase eventDataChanged signal
