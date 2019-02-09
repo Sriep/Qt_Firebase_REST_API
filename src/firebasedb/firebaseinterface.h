@@ -9,11 +9,6 @@
 
 #include "firebase_global.h"
 
-/**
- * TODO:
- * ** add "subpath" parameter
- */
-
 class Q_FIREBASEDB_EXPORT FirebaseInterface : public QObject
 {
     Q_OBJECT

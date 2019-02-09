@@ -1,14 +1,30 @@
 # Qt Firebase REST API
 
-This provides a wrapper around the Firebase REST API for use with Qt Projects. An alternative explanation of this project can be found at [the blog post](http://piersshepperson.co.uk/programming/2017/06/26/firebase-database-rest-api-qt/).  
+This is a fork of https://github.com/Sriep/Qt_Firebase_REST_API.
 
-Details of the Firebase REST API can be found at [here](https://firebase.google.com/docs/reference/rest/database/).
+It differs in the following aspects:
 
-This project is related to [chlasd's Firebase API](https://github.com/clkasd/qt-firebaseapi) but updated, slimmed and modernised.
+* global installation: the code is compiled into a separate library and installed into your normal Qt installation (see section below)
+* easy mocking: it introduces a additional interface for the Firebase class, called FirebaseInterface. An mocking example with the Catch2 and Trompeloeil frameworks is provided at [mocking example](examples/firebasedb/mocking).
 
-To use, copy the firebase.h and firebase.cpp files into your own projects. Either copy the files form GitHub indivdually, or downlaod the whole project with 
+## Build & Install
 
-`git clone https://github.com/Sriep/Qt_Firebase_REST_API.git`
+```
+qmake
+make
+make install
+```
+
+## Usage
+
+In your .pro file:
+```
+QT += firebasedb
+```
+In your C++ code:
+```
+#include <QtFirebaseDb/Firebase>
+```
 
 ## Overview
 
@@ -73,8 +89,8 @@ fb->setValue(uploadDoc, “PUT“);
 
 Once we have made a request we will normally wish to see the response. Even if it is just to know the request has finished successfully. To do this we handle the `responesReady` signal from the Firebase object. So if we define an `onResponseReasy` function in our class that is using the Firebase object, we can add the following line:
 ```
-connect(fb,SIGNAL(eventResponseReady(QByteArray)) 
-             ,this,SLOT(onResponseReady(QByteArray)));
+connect(fb, &Firebase::eventResponseReady,
+        this, &MyFancyClass::onResponseReady);
 ```
 And create the onResponseReady function to handle it. You can see examples in firebaseexamples.cpp.
 ```
@@ -91,10 +107,10 @@ The Firebase REST API allows the streaming of changes to a single location in yo
 
 What that means is that you can listen to a location in your database and every time there is a change at that location you are informed. Each time the data at the point you are watching in your Firebase database is changed, the Firebase object sends an `eventDataChanged` signal. The first time the signal is called it returns the initial contents of your database endpoint, further singls indicate subsequent changes. The following code snippet will arrange for the `onDataChanged` function to handle that signal.
 ```
-Firebase *firebaseGet=new Firebase(fbUrl, "lll/.json");
+Firebase *firebaseGet = new Firebase(fbUrl, "lll/.json");
 firebaseGet->listenEvents();;
-connect(firebaseGet,SIGNAL(eventDataChanged(QString))
-          , this,SLOT(onDataChanged(QString)));
+connect(firebaseGet, &Firebase::eventDataChanged,
+        this, &MyFancyClass::onDataChanged);
 ```
 You can then create the onDataChanged function to place your code to handle the database changes. Look at firebaseexamples.cpp for an example of this.
 ```
